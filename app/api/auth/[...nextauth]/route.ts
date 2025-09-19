@@ -23,18 +23,14 @@ const handler = NextAuth({
           where: { name: credentials.username },
         });
 
-        if (!user) {
-            throw new Error("Usuário não existe no banco de dados!")
-        }
+        if (!user) return null;
 
         const passwordMatch = await bcrypt.compare(
           credentials.password,
           user.password
         );
 
-        if(!passwordMatch){
-            throw new Error("Senha incorreta!")
-        };
+        if(!passwordMatch) return null;
 
         return {
             id: user.id,
