@@ -1,0 +1,62 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Driver {
+  id        String   @id @default(cuid())
+  name      String
+  cpf       String   @unique
+  plate     String  
+  phone     String?
+  deliveries Delivery[]
+}
+
+model Delivery {
+  id           String   @id @default(cuid())
+  chaveCTe     String   @unique  // chave de acesso CT-e
+  numeroCTe    String
+  dataEmissao  DateTime
+  status       DeliveryStatus @default(PENDING)
+
+  emitente     String
+  remetente    String
+  destinatario String
+  origem       String
+  destino      String
+
+  produto      String?
+  quantidade   String?
+  valorFrete   Float?
+
+  qrCode       String?
+  protocolo    String?
+
+  driverId     String
+  driver       Driver   @relation(fields: [driverId], references: [id])
+
+  receipts     Receipt[]
+  createdAt    DateTime @default(now())
+}
+
+model Receipt {
+  id         String   @id @default(cuid())
+  url        String   // caminho da foto (S3, Supabase, etc.)
+  createdAt  DateTime @default(now())
+
+  deliveryId String
+  delivery   Delivery @relation(fields: [deliveryId], references: [id])
+}
+
+enum DeliveryStatus {
+  PENDING    
+  ON_ROUTE    
+  AT_CLIENT   
+  DELIVERED   
+}
