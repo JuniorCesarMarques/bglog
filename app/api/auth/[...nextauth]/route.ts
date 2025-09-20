@@ -8,8 +8,8 @@ const handler = NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
-        password: { label: "Password", type: "password" },
+        username: { label: "username", type: "text", placeholder: "jsmith" },
+        password: { label: "password", type: "password" },
       },
       async authorize(credentials, req) {
         if (
@@ -19,8 +19,8 @@ const handler = NextAuth({
           return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: { name: credentials.username },
+        const user = await prisma.driver.findUnique({
+          where: { userName: credentials.username },
         });
 
         if (!user) return null;
@@ -34,7 +34,7 @@ const handler = NextAuth({
 
         return {
             id: user.id,
-            userName: user.name,
+            userName: user.userName,
         }
       },
     }),

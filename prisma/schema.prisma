@@ -1,7 +1,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../app/generated/prisma"
 }
 
 datasource db {
@@ -11,7 +10,8 @@ datasource db {
 
 model Driver {
   id        String   @id @default(cuid())
-  name      String
+  userName  String   @unique
+  password  String
   cpf       String   @unique
   plate     String  
   phone     String?
