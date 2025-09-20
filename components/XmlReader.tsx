@@ -1,12 +1,16 @@
-"use client"
+"use client";
 
 export default function XmlReader() {
   return (
     <form
-      onSubmit={async (e) => {
+      onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const file = (e.target as any).file.files[0];
+        const target = e.currentTarget as typeof e.currentTarget & {
+          file: { files: FileList };
+        };
+
+        const file = target.file.files[0];
         const formData = new FormData();
         formData.append("file", file);
 
@@ -21,7 +25,12 @@ export default function XmlReader() {
         console.log(data);
       }}
     >
-      <input className="bg-amber-400 p-2" type="file" name="file" accept=".xml" />
+      <input
+        className="bg-amber-400 p-2"
+        type="file"
+        name="file"
+        accept=".xml"
+      />
       <button type="submit">Enviar XML</button>
     </form>
   );
