@@ -4,6 +4,7 @@ import { prisma } from "@/utils/connect";
 import bcrypt from "bcryptjs";
 
 const handler = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -30,18 +31,18 @@ const handler = NextAuth({
           user.password
         );
 
-        if(!passwordMatch) return null;
+        if (!passwordMatch) return null;
 
         return {
-            id: user.id,
-            userName: user.userName,
-        }
+          id: user.id,
+          userName: user.userName,
+        };
       },
     }),
   ],
   session: {
-    strategy: "jwt"
-  }
+    strategy: "jwt",
+  },
 });
 
 export { handler as GET, handler as POST };
