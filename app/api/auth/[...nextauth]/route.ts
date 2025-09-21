@@ -1,9 +1,9 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/utils/connect";
 import bcrypt from "bcryptjs";
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
@@ -43,6 +43,26 @@ const handler = NextAuth({
   session: {
     strategy: "jwt",
   },
-});
+  callbacks: {
+    async jwt({ token, user }) {
+      // primeira vez que o user loga
+      if (user) {
+        token.id = user.id;
+        token.userName = (user as any).userName;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // coloca os dados do token na session
+      session.user = {
+        id: token.id as string,
+        userName: token.userName as string,
+      };
+      return session;
+    },
+  },
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

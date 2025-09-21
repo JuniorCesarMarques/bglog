@@ -1,11 +1,12 @@
 import LoginForm from "@/components/LoginForm";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 
 
 export default async function Login() {
 
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   console.log(session)
   return (
